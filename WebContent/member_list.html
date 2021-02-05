@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.12.0/underscore-min.js" integrity="sha512-BDXGXSvYeLxaldQeYJZVWXJmkisgMlECofWFXKpWwXnfcp/R708nrs/BtNLH5cb/5TE7aeYRTDBRXu6kRL4VeQ==" crossorigin="anonymous"></script>
+<script>
+var listTemp = `<table
+	<table border="1" width="100%">
+	<tr>
+		<td>No</td>
+		<td>Name</td>
+		<td>Email</td>
+		<td>Phone</td>
+	</tr>
+	<%
+	for(var i=0; i<mem_list.length; i++) {
+		var member = mem_list[i];
+	%>
+	<tr>
+		<td><%=member.no %></td>
+		<td><%=member.name %></td>
+		<td><%=member.email %></td>
+		<td><%=member.phone %></td>
+	</tr>
+	<%
+	} //end of for
+	%>
+</table>
+`;
+
+
+$(function() {
+	var urlStr = "MemberServer.jsp";
+	$.get(urlStr, function(data, status) {
+		if(status == "success") {
+			var jsObj = JSON.parse(data.trim());
+			var memlist = jsObj.mem_list;
+		
+			var compiled = _.template(listTemp);
+			$('#area').html(compiled({mem_list: memlist}));
+		} else {
+			document.write("<h2>서버오류</h2>");
+		}
+	});
+});
+</script>
+</head>
+<body>
+<h1>:::회원 정보 목록:::</h1>
+<div id="area"></div>
+</body>
+</html>

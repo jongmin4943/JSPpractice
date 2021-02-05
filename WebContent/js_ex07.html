@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!-- jQuery CDN -->
+<script src="http://code.jquery.com/jquery.js"></script>
+<!-- underscore.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.12.0/underscore-min.js" integrity="sha512-BDXGXSvYeLxaldQeYJZVWXJmkisgMlECofWFXKpWwXnfcp/R708nrs/BtNLH5cb/5TE7aeYRTDBRXu6kRL4VeQ==" crossorigin="anonymous"></script>
+
+<script id="list_template" type="text/template">
+<table border="1" width="100%">
+	<tr>
+		<td>No</td>
+		<td>Name</td>
+		<td>Email</td>
+		<td>Phone</td>
+	</tr>
+	<%
+	for(var i=0; i<mem_list.length; i++) {
+		var member = mem_list[i];
+	%>
+	<tr>
+		<td><%=member.no %></td>
+		<td><%=member.name %></td>
+		<td><%=member.email %></td>
+		<td><%=member.phone %></td>
+	</tr>
+	<%
+	} //end of for
+	%>
+</table>
+</script>
+
+
+<script type="text/javascript">
+//js 배열 초기화
+/* var mem_list=[{no: "1001", name: "Hong", email: "hong@naver.com", phone: "010-1234-1231"}
+,{no: "1002", name: "Hong2", email: "hong2@naver.com", phone: "010-1234-2344"}
+,{no: "1003", name: "Hong3", email: "hong3@naver.com", phone: "010-1234-3455"}
+	
+]; */
+
+//jQuery 진입점
+	var mem_list = [];
+
+$(function() {
+	function parseMemberList() {
+		var compiled = _.template($("#list_template").html());
+		var resultTxt = compiled({"mem_list": mem_list});
+		console.log(resultTxt);
+		$("#list_result_area").html(resultTxt); //innerHTML과 같은기능
+	}
+	//함수 호출
+	$.get("memberController.jsp", function(data, status) {
+		if(status == "success") {
+			var jsobj = JSON.parse(data.trim());
+			mem_list = jsobj.mem_list;
+			console.log(mem_list);
+		}
+	});
+	parseMemberList();
+	$("#saveBtn").click(function() {
+		parseMemberList();
+		var obj = {
+				no : $("#no").val(),
+				name : $("#name").val(),
+				email : $("#email").val(),
+				phone : $("#phone").val()
+		};
+		$.get("memberController.jsp", function(data, status) {
+			if(status == "success") {
+				var jsobj = JSON.parse(data.trim());
+				mem_list = jsobj.mem_list;
+			}
+		});
+		$.post("memberController.jsp",obj,function(data, status){
+			if(status == "success") {
+				parseMemberList();
+ 				$("#no").val("");
+				$("#name").val("");
+ 				$("#email").val("");
+				$("#phone").val("");
+			}
+		});
+	});
+});
+for(i=0;i<mem_list.length;i++) {
+	
+}
+
+</script>
+
+</head>
+<body>
+<table border="1">
+	<tr>
+		<td>No</td>
+		<td><input type="text" id="no" value="1004" /></td>
+	</tr>
+	<tr>
+		<td>Name</td>
+		<td><input type="text" id="name" value="Hong4" /></td>
+	</tr>
+	<tr>
+		<td>Email</td>
+		<td><input type="text" id="email" value="hong4@naver.com" /></td>
+	</tr>
+	<tr>
+		<td>Phone</td>
+		<td><input type="text" id="phone" value="010-1456-6745" /></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<button id="saveBtn">저장하기</button>
+		</td>
+	</tr>
+</table>
+<hr>
+<h2>회원 정보 목록</h2>
+<div id="list_result_area">
+<!-- template 결과가 들어오는 영역 -->
+</div>
+</body>
+</html>

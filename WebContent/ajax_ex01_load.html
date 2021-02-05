@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+h1 {
+	color : green;
+}
+</style>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script>
+$(function() {
+	$('button').click(function() {
+		$('#demo').load("data.txt", function() {
+			//load가 끝나면 실행하는 callback 함수
+			$("#gobtn").click(function () {
+				location.href="http://www.naver.com";
+			});
+		});
+	});
+}); //로드같은경우는 로드가 다 끝나야 무언가 기능이 가능하다.
+</script>
+</head>
+<body>
+<h3>Welcome to 동막골</h3>
+<div id="demo">여기의 내용이 바뀝니다.</div>
+<p><button>불러오기</button></p>
+</body>
+</html>

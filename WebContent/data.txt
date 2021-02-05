@@ -1,0 +1,3 @@
+<h1>길동이의 홈페이지</h1>
+<p>Home | Profile | Gallery | Board | SNS</p>
+<p><button id="gobtn">Naver</button></p>

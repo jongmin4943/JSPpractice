@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script>
+$(function() {
+	//버튼을 누르면 Ajax실행
+	$('button').click(function(){
+		//parameter로 사용될 js 객체를 생성한다
+		var parameters = {
+			name : $("#name").val(),
+			city : $("#city").val()
+		}
+		$.post("demo_test.jsp",parameters,function(data, status){
+			if(status == "success") {
+				$("#result").html(data);
+ 				$("#name").val("").focus(); // 여기선 setter로 이용
+				$("#city").val("");
+			}
+		});
+	});
+});
+</script>
+</head>
+<body>
+<h1>POST 방식으로 AJax처리</h1>
+	NAME : <input type="text" id="name" value="Kim"/><br>
+	CITY : <input type="text" id="city" value="Seoul"/><br>
+<button>GET 방식으로 AJax 처리</button>
+<div id="result">여기에 내용이 보여집니다.</div>
+</body>
+</html>

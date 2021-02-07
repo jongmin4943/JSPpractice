@@ -29,6 +29,30 @@ var listTemp = `<table
 	%>
 </table>
 `;
+function filter(memlist,keyword,where) {
+	var mem_list = [];
+	for(var i=0; i<memlist.length; i++){
+		if(where == "name") {
+			var idx = memlist[i].name.indexOf(keyword);
+			if(idx != -1) {
+				mem_list.push(memlist[i]);
+			}
+		}
+		if(where == "email") {
+			var idx = memlist[i].email.indexOf(keyword);
+			if(idx != -1) {
+				mem_list.push(memlist[i]);
+			}
+		}
+		if(where == "phone") {
+			var idx = memlist[i].phone.indexOf(keyword);
+			if(idx != -1) {
+				mem_list.push(memlist[i]);
+			}
+		}
+	}
+	return mem_list;
+}
 $(function() {
 	$.get("MemberServer.jsp", function(data, status) {
 		if(status == "success") {
@@ -59,6 +83,21 @@ $(function() {
 			}
 		});
 	});
+	$('#btn').click(function() {
+		$.get("MemberServer.jsp", function(data, status) {
+			if(status == "success") {
+				var where = $("#cate option:selected").val();
+				var keyword = $('#keyword').val();
+				var jsObj = JSON.parse(data.trim());
+				var memlist = jsObj.mem_list;
+				var filtered = filter(memlist,keyword,where);
+				var compiled = _.template(listTemp);
+				$('#area').html(compiled({mem_list: filtered}));
+			} else {
+				document.write("<h2>서버오류</h2>");
+			}
+		});
+	});
 });
 </script>
 </head>
@@ -86,6 +125,17 @@ $(function() {
 	</tr>
 </table>
 <h1>:::회원 정보 목록:::</h1>
+<div>
+	<form action="">
+		<input id="keyword" type="text" name="search" maxlength="20" />
+		<input id="btn" type="button" value="search" name="search" />
+		<select id="cate">
+   			<option value="name">Name</option>
+    		<option value="email">Email</option>
+   			<option value="phone">Phone</option>
+		</select>
+	</form>
+</div>
 <div id="area"></div>
 </body>
 </html>

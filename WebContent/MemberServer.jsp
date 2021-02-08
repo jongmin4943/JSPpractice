@@ -13,7 +13,7 @@ private static ArrayList<MemberVo> list = new ArrayList<>();
 	list.add(new MemberVo("1003","PARK","park@naver.com", "010-3333-4444"));
 }
 
-private JSONObject  show(JspWriter out) throws Exception {
+private JSONObject  show(JspWriter out, ArrayList<MemberVo> searchList) throws Exception {
 	//GET 요청 처리
 		//list에 있는 각 MemverVo 객체의 값이 JSONObject 객체로 이전된다.
 		//JSONObject 객체를 JSONArrary로 저장한다.
@@ -23,12 +23,12 @@ private JSONObject  show(JspWriter out) throws Exception {
 		*/
 		JSONArray jsArr = new JSONArray();
 		JSONObject rootObj = new JSONObject();
-		for(int i = 0; i<list.size(); i++) {
+		for(int i = 0; i<searchList.size(); i++) {
 			JSONObject jsObj = new JSONObject();
-			jsObj.put("no",list.get(i).getNo());
-			jsObj.put("name",list.get(i).getName());
-			jsObj.put("email",list.get(i).getEmail());
-			jsObj.put("phone",list.get(i).getPhone());
+			jsObj.put("no",searchList.get(i).getNo());
+			jsObj.put("name",searchList.get(i).getName());
+			jsObj.put("email",searchList.get(i).getEmail());
+			jsObj.put("phone",searchList.get(i).getPhone());
 			jsArr.put(jsObj);
 		}
 		rootObj.put("mem_list", jsArr);
@@ -50,9 +50,26 @@ if("POST".equals(method)) {
 	vo.setEmail(request.getParameter("email"));
 	vo.setPhone(request.getParameter("phone"));
 	list.add(vo);
-	show(out);
+	show(out, list);
 } else {
-	show(out);
+	//GET 요청 처리
+	//cmd파라미터를 사용한다.
+	String cmd = request.getParameter("cmd");
+	String searchData = request.getParameter("searchData");
+	if("search".equals(cmd)){
+		//검색 요청을 받으면 목록을 새로 만들어서 show한다.
+		ArrayList<MemberVo> newList = new ArrayList<MemberVo>();
+		//검색 알고리즘을 이용해서 list에서 searchData를 검색해서 newList에 담아준다.
+		for(MemberVo mv : list) {
+			if(mv.getName().indexOf(searchData) != -1) {
+				newList.add(mv);
+			}
+		}
+		show(out, newList);
+	} else {
+		//default 전체 목록 show
+		show(out, list);
+	}
 	
 }
 
